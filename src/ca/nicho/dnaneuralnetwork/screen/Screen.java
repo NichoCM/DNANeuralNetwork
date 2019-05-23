@@ -3,6 +3,7 @@ package ca.nicho.dnaneuralnetwork.screen;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -18,21 +19,27 @@ import ca.nicho.dnaneuralnetwork.DNANeuralNetwork;
 
 public class Screen extends JPanel {
 
-	public static final int MARGIN = 30;
+	public static final int MARGIN = 60;
 	public static final int NODE_SIZE = 15;
 	
 	public static final Stroke LINE_STROKE = new BasicStroke(3);
+	public static final Font TEXT_FONT = new Font("Calibri", Font.PLAIN, 18);
 	
 	public DNANeuralNetwork dnn;
+	
+	public int generation = 0;
+	public int index = 0;
+	
 	public int width;
 	public int height;
 	
 	private HashMap<Integer, Point> nodeCache;
 	
-	public Screen(DNANeuralNetwork dnn, int width, int height) {
-		this.dnn = dnn;
-		
+	public Screen(int width, int height) {		
 		// Create the JFrame for this panel
+		this.width = width;
+		this.height = height;
+		
 		JFrame frame = new JFrame();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,8 +57,17 @@ public class Screen extends JPanel {
 			
 	}
 	
+	public void setNetwork(DNANeuralNetwork dnn) {
+		this.dnn = dnn;
+		this.repaint();
+	}
+	
 	@Override
 	public void paintComponent(Graphics g3d) {
+		super.paintComponent(g3d);
+		
+		if(this.dnn == null) return;
+		
 		Graphics2D g = (Graphics2D)g3d;
 		
 		// Reset the node cache
@@ -87,10 +103,17 @@ public class Screen extends JPanel {
 			}
 		}
 		
+		g.setColor(Color.black);
+		g.setFont(TEXT_FONT);
+		g.drawString("Genetic Hash: " + dnn.toString(), 20, 20);
+		g.drawString("Generation: " + generation, 20, 35);
+		g.drawString("Current index: " + index, 20, 50);
+		
 	}
 	
 	private void drawNode(Graphics2D g, int index, int nodeCount, int layer) { 
-		g.setColor(Color.red);
+		
+		float value = dnn.cachedActivtations[index];
 		
 		int paddingLeft = (int)(width / (float)(dnn.depth + 2) - NODE_SIZE / 2) / 2;
 		int paddingTop = (int)(height / (float)nodeCount - NODE_SIZE / 2) / 2;
@@ -100,6 +123,14 @@ public class Screen extends JPanel {
 		
 		Point p = new Point(left + paddingLeft, top + paddingTop);
 		nodeCache.put(nodeCache.size(), p);
+		
+		if(value < 0) {
+			g.setColor(Color.magenta);
+		} else if(value > 0) {
+			g.setColor(Color.orange);
+		} else {
+			g.setColor(Color.black);
+		}
 		g.fillOval(p.x, p.y, NODE_SIZE, NODE_SIZE);
 	}
 	

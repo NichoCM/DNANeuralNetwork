@@ -8,15 +8,22 @@ public class Start {
 
 	public static void main(String[] s) throws Exception {
 			
-		DNANeuralNetwork dnn = new DNANeuralNetwork(36, 8, 15, 1);
+		DNANeuralNetwork dnn1 = new DNANeuralNetwork(25, 6, 12, 1);
 		for(int i = 0; i < 100; i++) {
-			dnn.connectNodeRandom();
+			dnn1.connectNodeRandom();
 		}
-				
-		float[] input = new float[36];
-		input[1] = 0.5f;
-		dnn.printOutput(input);
-		Screen screen = new Screen(dnn, 600, 600);
+		
+		DNANeuralNetwork dnn2 = new DNANeuralNetwork(25, 6, 12, 1);
+		for(int i = 0; i < 100; i++) {
+			dnn2.connectNodeRandom();
+		}
+		
+		System.out.println(dnn1);
+		System.out.println(dnn2);
+		
+		DNANeuralNetwork dnn3 = new DNANeuralNetwork(dnn1, dnn2);
+		
+		System.out.println(dnn3);
 		
 		/*ArrayList<DNANeuralNetwork> networks = new ArrayList<DNANeuralNetwork>();
 				
